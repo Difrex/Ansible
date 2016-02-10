@@ -1,0 +1,28 @@
+---
+- name: Install docker deps
+  apt: pkg={{item}}
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - bridge-utils
+
+- name: Remove old apt keys
+  apt_key: state=absent id={{item}}
+  with_items:
+    - D8576A8BA88D21E9
+
+- name: Add docker apt key
+  apt_key: keyserver=hkp://pgp.mit.edu id=58118E89F3A912897C070ADBF76221572C52609D
+
+- name: Remove old docker repos
+  apt_repository: repo='deb https://get.docker.com/ubuntu docker main' state=absent
+
+- name: add docker repo 
+  apt_repository: repo='deb https://apt.dockerproject.org/repo {{ansible_distribution | lower}}-{{ansible_distribution_release}} main' update_cache=yes
+
+- name: remove old docker package
+  apt: pkg=lxc-docker state=absent
+
+- name: install docker
+  apt: pkg=docker-engine
+  notify: docker - start and enable

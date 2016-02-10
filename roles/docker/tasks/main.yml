@@ -1,0 +1,4 @@
+---
+- include: grub.yml
+
+- include: docker.yml
